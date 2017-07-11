@@ -47,25 +47,29 @@ var DATE_KEYS = {
 };
 
 function readTags(buffer, offset, bigEndian, tags) {
-  var numEntries = readUInt16(buffer, offset, bigEndian);
-  offset += 2;
-
-  var res = {};
-  for (var i = 0; i < numEntries; i++) {
-    var tag = readUInt16(buffer, offset, bigEndian);
+  try {
+    var numEntries = readUInt16(buffer, offset, bigEndian);
     offset += 2;
 
-    var key = tags[tag] || tag;
-    var val = readTag(buffer, offset, bigEndian);
+    var res = {};
+    for (var i = 0; i < numEntries; i++) {
+      var tag = readUInt16(buffer, offset, bigEndian);
+      offset += 2;
 
-    if (key in DATE_KEYS)
-      val = parseDate(val);
+      var key = tags[tag] || tag;
+      var val = readTag(buffer, offset, bigEndian);
 
-    res[key] = val;
-    offset += 10;
+      if (key in DATE_KEYS)
+        val = parseDate(val);
+
+      res[key] = val;
+      offset += 10;
+    }
+
+    return res;
+  } catch (error) {
+    return error
   }
-
-  return res;
 }
 
 var SIZE_LOOKUP = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8];
