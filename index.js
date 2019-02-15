@@ -1,4 +1,5 @@
 var tags = require('./tags');
+var namespace = 'http://www.w3.org/2003/12/exif/ns#'
 
 module.exports = function(buffer, opts = {}) {
   if (buffer.toString('ascii', 0, 5) !== 'Exif\0')
@@ -62,7 +63,11 @@ function readTags(buffer, offset, bigEndian, tags, opts) {
       if (key in DATE_KEYS)
         val = parseDate(val, opts.timezoneOffset);
 
-      res[key] = val;
+      if opts.expand
+        res[namespace + key] = val;
+      else
+        res[key] = val;
+
       offset += 10;
     }
 
