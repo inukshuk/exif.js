@@ -41,9 +41,9 @@ module.exports = function(buffer, opts = {}) {
 };
 
 var DATE_KEYS = {
-  DateTimeOriginal: true,
-  DateTimeDigitized: true,
-  ModifyDate: true
+  dateTimeOriginal: true,
+  dateTimeDigitized: true,
+  modifyDate: true
 };
 
 function readTags(buffer, offset, bigEndian, tags, opts) {
