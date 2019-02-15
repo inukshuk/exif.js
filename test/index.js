@@ -31,10 +31,10 @@ describe('exif-reader', function() {
            FNumber: 19,
            ExposureProgram: 2,
            ISO: 100,
-           ExifVersion: new Buffer([48, 50, 50, 48]),
+           ExifVersion: Buffer.from([48, 50, 50, 48]),
            DateTimeOriginal: new Date("2004-06-17T06:47:02.000Z"),
            DateTimeDigitized: new Date("2004-06-17T06:47:02.000Z"),
-           ComponentsConfiguration: new Buffer([1, 2, 3, 0]),
+           ComponentsConfiguration: Buffer.from([1, 2, 3, 0]),
            CompressedBitsPerPixel: 9,
            ShutterSpeedValue: 4.906890869140625,
            ApertureValue: 8.495849609375,
@@ -43,8 +43,8 @@ describe('exif-reader', function() {
            MeteringMode: 6,
            Flash: 0,
            FocalLength: 70,
-           UserComment: new Buffer([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-           FlashpixVersion: new Buffer([48, 49, 48, 48]),
+           UserComment: Buffer.from([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+           FlashpixVersion: Buffer.from([48, 49, 48, 48]),
            ColorSpace: 1,
            PixelXDimension: 1600,
            PixelYDimension: 1195,
@@ -52,7 +52,7 @@ describe('exif-reader', function() {
            FocalPlaneYResolution: 3442.016806722689,
            FocalPlaneResolutionUnit: 2,
            SensingMethod: 2,
-           FileSource: new Buffer([3]),
+           FileSource: Buffer.from([3]),
            CustomRendered: 0,
            ExposureMode: 0,
            WhiteBalance: 0,
@@ -77,10 +77,10 @@ describe('exif-reader', function() {
            FNumber: 2.2,
            ExposureProgram: 2,
            ISO: 32,
-           ExifVersion: new Buffer([48, 50, 50, 49]),
+           ExifVersion: Buffer.from([48, 50, 50, 49]),
            DateTimeOriginal: new Date("2015-02-28T17:13:57.000Z"),
            DateTimeDigitized: new Date("2015-02-28T17:13:57.000Z"),
-           ComponentsConfiguration: new Buffer([1, 2, 3, 0]),
+           ComponentsConfiguration: Buffer.from([1, 2, 3, 0]),
            ShutterSpeedValue: 8.930864197530864,
            ApertureValue: 2.2750072066878064,
            BrightnessValue: 7.991,
@@ -89,15 +89,15 @@ describe('exif-reader', function() {
            Flash: 16,
            FocalLength: 4.15,
            SubjectArea: [ 964, 1287, 610, 612 ],
-           MakerNote: new Buffer([65, 112, 112, 108, 101, 32, 105, 79, 83, 0, 0, 1, 77, 77, 0, 8, 0, 1, 0, 9, 0, 0, 0, 1, 0, 0, 0, 2, 0, 3, 0, 7, 0, 0, 0, 104, 0, 0, 0, 116, 0, 4, 0, 9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0, 9, 0, 0, 0, 1, 0, 0, 0, 128, 0, 6, 0, 9, 0, 0, 0, 1, 0, 0, 0, 130, 0, 7, 0, 9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0, 10, 0, 0, 0, 3, 0, 0, 0, 220, 0, 14, 0, 9, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 98, 112, 108, 105, 115, 116, 48, 48, 212, 1, 2, 3, 4, 5, 6, 7, 8, 85, 102, 108, 97, 103, 115, 85, 118, 97, 108, 117, 101, 85, 101, 112, 111, 99, 104, 89, 116, 105, 109, 101, 115, 99, 97, 108, 101, 16, 1, 19, 0, 3, 205, 166, 44, 254, 105, 204, 16, 0, 18, 59, 154, 202, 0, 8, 17, 23, 29, 35, 45, 47, 56, 58, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 12, 100, 0, 0, 12, 129, 255, 255, 255, 137, 0, 0, 56, 136, 255, 255, 250, 212, 0, 0, 143, 129]),
+           MakerNote: Buffer.from([65, 112, 112, 108, 101, 32, 105, 79, 83, 0, 0, 1, 77, 77, 0, 8, 0, 1, 0, 9, 0, 0, 0, 1, 0, 0, 0, 2, 0, 3, 0, 7, 0, 0, 0, 104, 0, 0, 0, 116, 0, 4, 0, 9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0, 9, 0, 0, 0, 1, 0, 0, 0, 128, 0, 6, 0, 9, 0, 0, 0, 1, 0, 0, 0, 130, 0, 7, 0, 9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0, 10, 0, 0, 0, 3, 0, 0, 0, 220, 0, 14, 0, 9, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 98, 112, 108, 105, 115, 116, 48, 48, 212, 1, 2, 3, 4, 5, 6, 7, 8, 85, 102, 108, 97, 103, 115, 85, 118, 97, 108, 117, 101, 85, 101, 112, 111, 99, 104, 89, 116, 105, 109, 101, 115, 99, 97, 108, 101, 16, 1, 19, 0, 3, 205, 166, 44, 254, 105, 204, 16, 0, 18, 59, 154, 202, 0, 8, 17, 23, 29, 35, 45, 47, 56, 58, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 12, 100, 0, 0, 12, 129, 255, 255, 255, 137, 0, 0, 56, 136, 255, 255, 250, 212, 0, 0, 143, 129]),
            SubSecTimeOriginal: '476',
            SubSecTimeDigitized: '476',
-           FlashpixVersion: new Buffer([48, 49, 48, 48]),
+           FlashpixVersion: Buffer.from([48, 49, 48, 48]),
            ColorSpace: 1,
            PixelXDimension: 3264,
            PixelYDimension: 2448,
            SensingMethod: 2,
-           SceneType: new Buffer([1]),
+           SceneType: Buffer.from([1]),
            ExposureMode: 0,
            WhiteBalance: 0,
            FocalLengthIn35mmFormat: 29,
@@ -124,17 +124,17 @@ describe('exif-reader', function() {
 
   it('should error when missing Exif tag', function() {
     assert.throws(function() {
-      exif(new Buffer(50));
+      exif(Buffer.from([50]));
     }, /buffer should start with "Exif"/);
   });
 
   it('should error when missing byte order marker', function() {
     assert.throws(function() {
-      exif(new Buffer('Exif\0\0IM'));
+      exif(Buffer.from('Exif\0\0IM'));
     }, /expected byte order marker/);
 
     assert.throws(function() {
-      exif(new Buffer('Exif\0\0MI'));
+      exif(Buffer.from('Exif\0\0MI'));
     }, /expected byte order marker/);
   });
 });
