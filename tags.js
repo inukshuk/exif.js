@@ -187,7 +187,7 @@ exports.exif = {
   0x8822: 'exposureProgram',
   0x8824: 'spectralSensitivity',
   0x8825: 'gpsInfo',
-  0x8827: 'iSO',
+  0x8827: 'iso',
   0x8828: 'opto-ElectricConvFactor',
   0x8829: 'interlace',
   0x882A: 'timeZoneOffset',

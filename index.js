@@ -29,14 +29,14 @@ module.exports = function(buffer, opts = {}) {
   if (ifdOffset !== 0)
     result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif, opts);
 
-  if (ifd0.ExifOffset)
-    result.exif = readTags(buffer, ifd0.ExifOffset + 6, bigEndian, tags.exif, opts);
+  if (ifd0.exifOffset)
+    result.exif = readTags(buffer, ifd0.exifOffset + 6, bigEndian, tags.exif, opts);
 
-  if (ifd0.GPSInfo)
-    result.gps = readTags(buffer, ifd0.GPSInfo + 6, bigEndian, tags.gps, opts);
+  if (ifd0.gpsInfo)
+    result.gps = readTags(buffer, ifd0.gpsInfo + 6, bigEndian, tags.gps, opts);
 
-  if (ifd0.InteropOffset)
-    result.interop = readTags(buffer, ifd0.InteropOffset + 6, bigEndian, tags.exif, opts);
+  if (ifd0.interopOffset)
+    result.interop = readTags(buffer, ifd0.interopOffset + 6, bigEndian, tags.exif, opts);
 
   return result;
 };
@@ -61,9 +61,9 @@ function readTags(buffer, offset, bigEndian, tags, opts) {
       var val = readTag(buffer, offset, bigEndian);
 
       if (key in DATE_KEYS)
-        val = parseDate(val, opts.timezoneOffset);
+        val = parseDate(val, opts.timezoneOffset || 0);
 
-      if opts.expand
+      if (opts.expand)
         res[namespace + key] = val;
       else
         res[key] = val;
