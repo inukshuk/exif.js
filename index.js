@@ -1,6 +1,6 @@
 var tags = require('./tags');
 
-module.exports = function(buffer) {
+module.exports = function(buffer, opts = {}) {
   if (buffer.toString('ascii', 0, 5) !== 'Exif\0')
     throw new Error('Invalid EXIF data: buffer should start with "Exif".');
 
@@ -20,22 +20,22 @@ module.exports = function(buffer) {
     throw new Error('Invalid EXIF data: ifdOffset < 8');
 
   var result = {};
-  var ifd0 = readTags(buffer, ifdOffset, bigEndian, tags.exif);
+  var ifd0 = readTags(buffer, ifdOffset, bigEndian, tags.exif, opts);
   result.image = ifd0;
 
   var numEntries = readUInt16(buffer, ifdOffset, bigEndian);
   ifdOffset = readUInt32(buffer, ifdOffset + 2 + numEntries * 12, bigEndian);
   if (ifdOffset !== 0)
-    result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif);
+    result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif, opts);
 
   if (ifd0.ExifOffset)
-    result.exif = readTags(buffer, ifd0.ExifOffset + 6, bigEndian, tags.exif);
+    result.exif = readTags(buffer, ifd0.ExifOffset + 6, bigEndian, tags.exif, opts);
 
   if (ifd0.GPSInfo)
-    result.gps = readTags(buffer, ifd0.GPSInfo + 6, bigEndian, tags.gps);
+    result.gps = readTags(buffer, ifd0.GPSInfo + 6, bigEndian, tags.gps, opts);
 
   if (ifd0.InteropOffset)
-    result.interop = readTags(buffer, ifd0.InteropOffset + 6, bigEndian, tags.exif);
+    result.interop = readTags(buffer, ifd0.InteropOffset + 6, bigEndian, tags.exif, opts);
 
   return result;
 };
@@ -46,7 +46,7 @@ var DATE_KEYS = {
   ModifyDate: true
 };
 
-function readTags(buffer, offset, bigEndian, tags) {
+function readTags(buffer, offset, bigEndian, tags, opts) {
   try {
     var numEntries = readUInt16(buffer, offset, bigEndian);
     offset += 2;
@@ -60,7 +60,7 @@ function readTags(buffer, offset, bigEndian, tags) {
       var val = readTag(buffer, offset, bigEndian);
 
       if (key in DATE_KEYS)
-        val = parseDate(val);
+        val = parseDate(val, opts.timezoneOffset);
 
       res[key] = val;
       offset += 10;
@@ -137,7 +137,7 @@ function readValue(buffer, offset, bigEndian, type) {
   }
 }
 
-function parseDate(string) {
+function parseDate(string, offset = 0) {
   if (typeof string !== 'string')
     return null;
 
@@ -153,6 +153,11 @@ function parseDate(string) {
   date.setUTCMinutes(match[5]);
   date.setUTCSeconds(match[6]);
   date.setUTCMilliseconds(0);
+
+  if (offset !== 0) {
+    date.setUTCMinutes(date.getUTCMinutes() + offset)
+  }
+
   return date;
 }
 
