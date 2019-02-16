@@ -434,7 +434,7 @@ exports.exif = {
   0xFE56: 'sharpness',
   0xFE57: 'smoothness',
   0xFE58: 'moireFilter'
-};
+}
 
 exports.gps = {
   0x0000: 'gpsVersionID',
@@ -469,4 +469,4 @@ exports.gps = {
   0x001D: 'gpsDateStamp',
   0x001E: 'gpsDifferential',
   0x001F: 'gpsHPositioningError'
-};
+}

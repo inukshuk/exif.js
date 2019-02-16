@@ -1,196 +1,196 @@
-var tags = require('./tags');
+var tags = require('./tags')
 var namespace = 'http://www.w3.org/2003/12/exif/ns#'
 
 module.exports = function(buffer, opts = {}) {
   if (buffer.toString('ascii', 0, 5) !== 'Exif\0')
-    throw new Error('Invalid EXIF data: buffer should start with "Exif".');
+    throw new Error('Invalid EXIF data: buffer should start with "Exif".')
 
-  var bigEndian = null;
+  var bigEndian = null
   if (buffer[6] === 0x49 && buffer[7] === 0x49)
-    bigEndian = false;
+    bigEndian = false
   else if (buffer[6] === 0x4d && buffer[7] === 0x4d)
-    bigEndian = true;
+    bigEndian = true
   else
-    throw new Error('Invalid EXIF data: expected byte order marker.');
+    throw new Error('Invalid EXIF data: expected byte order marker.')
 
   if (readUInt16(buffer, 8, bigEndian) !== 0x002A)
-    throw new Error('Invalid EXIF data: expected 0x002A.');
+    throw new Error('Invalid EXIF data: expected 0x002A.')
 
-  var ifdOffset = readUInt32(buffer, 10, bigEndian) + 6;
+  var ifdOffset = readUInt32(buffer, 10, bigEndian) + 6
   if (ifdOffset < 8)
-    throw new Error('Invalid EXIF data: ifdOffset < 8');
+    throw new Error('Invalid EXIF data: ifdOffset < 8')
 
-  var result = {};
-  var ifd0 = readTags(buffer, ifdOffset, bigEndian, tags.exif, opts);
-  result.image = ifd0;
+  var result = {}
+  var ifd0 = readTags(buffer, ifdOffset, bigEndian, tags.exif, opts)
+  result.image = ifd0
 
-  var numEntries = readUInt16(buffer, ifdOffset, bigEndian);
-  ifdOffset = readUInt32(buffer, ifdOffset + 2 + numEntries * 12, bigEndian);
+  var numEntries = readUInt16(buffer, ifdOffset, bigEndian)
+  ifdOffset = readUInt32(buffer, ifdOffset + 2 + numEntries * 12, bigEndian)
   if (ifdOffset !== 0)
-    result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif, opts);
+    result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif, opts)
 
   if (ifd0.exifOffset)
-    result.exif = readTags(buffer, ifd0.exifOffset + 6, bigEndian, tags.exif, opts);
+    result.exif = readTags(buffer, ifd0.exifOffset + 6, bigEndian, tags.exif, opts)
 
   if (ifd0.gpsInfo)
-    result.gps = readTags(buffer, ifd0.gpsInfo + 6, bigEndian, tags.gps, opts);
+    result.gps = readTags(buffer, ifd0.gpsInfo + 6, bigEndian, tags.gps, opts)
 
   if (ifd0.interopOffset)
-    result.interop = readTags(buffer, ifd0.interopOffset + 6, bigEndian, tags.exif, opts);
+    result.interop = readTags(buffer, ifd0.interopOffset + 6, bigEndian, tags.exif, opts)
 
-  return result;
-};
+  return result
+}
 
 var DATE_KEYS = {
   dateTimeOriginal: true,
   dateTimeDigitized: true,
   modifyDate: true
-};
+}
 
 function readTags(buffer, offset, bigEndian, tags, opts) {
   try {
-    var numEntries = readUInt16(buffer, offset, bigEndian);
-    offset += 2;
+    var numEntries = readUInt16(buffer, offset, bigEndian)
+    offset += 2
 
-    var res = {};
+    var res = {}
     for (var i = 0; i < numEntries; i++) {
-      var tag = readUInt16(buffer, offset, bigEndian);
-      offset += 2;
+      var tag = readUInt16(buffer, offset, bigEndian)
+      offset += 2
 
-      var key = tags[tag] || tag;
-      var val = readTag(buffer, offset, bigEndian);
+      var key = tags[tag] || tag
+      var val = readTag(buffer, offset, bigEndian)
 
       if (key in DATE_KEYS)
-        val = parseDate(val, opts.timezoneOffset || 0);
+        val = parseDate(val, opts.timezoneOffset || 0)
 
       if (opts.expand)
-        res[namespace + key] = val;
+        res[namespace + key] = val
       else
-        res[key] = val;
+        res[key] = val
 
-      offset += 10;
+      offset += 10
     }
 
-    return res;
+    return res
   } catch (error) {
     return error
   }
 }
 
-var SIZE_LOOKUP = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8];
+var SIZE_LOOKUP = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
 
 function readTag(buffer, offset, bigEndian) {
-  var type = readUInt16(buffer, offset, bigEndian);
+  var type = readUInt16(buffer, offset, bigEndian)
 
   // Exit early in case of unknown or bogus type
-  if (!type || type > SIZE_LOOKUP.length) return null;
+  if (!type || type > SIZE_LOOKUP.length) return null
 
-  var numValues = readUInt32(buffer, offset + 2, bigEndian);
-  var valueSize = SIZE_LOOKUP[type - 1];
-  var valueOffset = valueSize * numValues <= 4 ? offset + 6 : readUInt32(buffer, offset + 6, bigEndian) + 6;
+  var numValues = readUInt32(buffer, offset + 2, bigEndian)
+  var valueSize = SIZE_LOOKUP[type - 1]
+  var valueOffset = valueSize * numValues <= 4 ? offset + 6 : readUInt32(buffer, offset + 6, bigEndian) + 6
 
   // Special case for ascii strings
   if (type === 2) {
-    var string = buffer.toString('ascii', valueOffset, valueOffset + numValues);
+    var string = buffer.toString('ascii', valueOffset, valueOffset + numValues)
     if (string[string.length - 1] === '\0') // remove null terminator
-      string = string.slice(0, -1);
+      string = string.slice(0, -1)
 
-    return string;
+    return string
   }
 
   // Special case for buffers
   if (type === 7)
-    return buffer.slice(valueOffset, valueOffset + numValues);
+    return buffer.slice(valueOffset, valueOffset + numValues)
 
   if (numValues === 1)
-    return readValue(buffer, valueOffset, bigEndian, type);
+    return readValue(buffer, valueOffset, bigEndian, type)
 
-  var res = [];
+  var res = []
   for (var i = 0; i < numValues; i++) {
-    res.push(readValue(buffer, valueOffset, bigEndian, type));
-    valueOffset += valueSize;
+    res.push(readValue(buffer, valueOffset, bigEndian, type))
+    valueOffset += valueSize
   }
 
-  return res;
+  return res
 }
 
 function readValue(buffer, offset, bigEndian, type) {
   switch (type) {
-    case 1: // uint8
-      return buffer[offset];
+  case 1: // uint8
+    return buffer[offset]
 
-    case 3: // uint16
-      return readUInt16(buffer, offset, bigEndian);
+  case 3: // uint16
+    return readUInt16(buffer, offset, bigEndian)
 
-    case 4: // uint32
-      return readUInt32(buffer, offset, bigEndian);
+  case 4: // uint32
+    return readUInt32(buffer, offset, bigEndian)
 
-    case 5: // unsigned rational
-      return readUInt32(buffer, offset, bigEndian) / readUInt32(buffer, offset + 4, bigEndian);
+  case 5: // unsigned rational
+    return readUInt32(buffer, offset, bigEndian) / readUInt32(buffer, offset + 4, bigEndian)
 
-    case 6: // int8
-      return buffer.readInt8(offset);
+  case 6: // int8
+    return buffer.readInt8(offset)
 
-    case 8: // int16
-      return readInt16(buffer, offset, bigEndian);
+  case 8: // int16
+    return readInt16(buffer, offset, bigEndian)
 
-    case 9: // int32
-      return readInt32(buffer, offset, bigEndian);
+  case 9: // int32
+    return readInt32(buffer, offset, bigEndian)
 
-    case 10: // signed rational
-      return readInt32(buffer, offset, bigEndian) / readInt32(buffer, offset + 4, bigEndian);
+  case 10: // signed rational
+    return readInt32(buffer, offset, bigEndian) / readInt32(buffer, offset + 4, bigEndian)
   }
 }
 
 function parseDate(string, offset = 0) {
   if (typeof string !== 'string')
-    return null;
+    return null
 
-  var match = string.match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+  var match = string.match(/^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})$/)
   if (!match)
-    return null;
+    return null
 
-  var date = new Date(1970, 0, 2); // to prevent unexpected month change after setUTCMonth()
-  date.setUTCFullYear(match[1]);
-  date.setUTCMonth(match[2] - 1);
-  date.setUTCDate(match[3]);
-  date.setUTCHours(match[4]);
-  date.setUTCMinutes(match[5]);
-  date.setUTCSeconds(match[6]);
-  date.setUTCMilliseconds(0);
+  var date = new Date(1970, 0, 2) // to prevent unexpected month change after setUTCMonth()
+  date.setUTCFullYear(match[1])
+  date.setUTCMonth(match[2] - 1)
+  date.setUTCDate(match[3])
+  date.setUTCHours(match[4])
+  date.setUTCMinutes(match[5])
+  date.setUTCSeconds(match[6])
+  date.setUTCMilliseconds(0)
 
   if (offset !== 0) {
     date.setUTCMinutes(date.getUTCMinutes() + offset)
   }
 
-  return date;
+  return date
 }
 
 // Buffer reading helpers to help switching between endianness
 function readUInt16(buffer, offset, bigEndian) {
   if (bigEndian)
-    return buffer.readUInt16BE(offset);
+    return buffer.readUInt16BE(offset)
 
-  return buffer.readUInt16LE(offset);
+  return buffer.readUInt16LE(offset)
 }
 
 function readUInt32(buffer, offset, bigEndian) {
   if (bigEndian)
-    return buffer.readUInt32BE(offset);
+    return buffer.readUInt32BE(offset)
 
-  return buffer.readUInt32LE(offset);
+  return buffer.readUInt32LE(offset)
 }
 
 function readInt16(buffer, offset, bigEndian) {
   if (bigEndian)
-    return buffer.readInt16BE(offset);
+    return buffer.readInt16BE(offset)
 
-  return buffer.readInt16LE(offset);
+  return buffer.readInt16LE(offset)
 }
 
 function readInt32(buffer, offset, bigEndian) {
   if (bigEndian)
-    return buffer.readInt32BE(offset);
+    return buffer.readInt32BE(offset)
 
-  return buffer.readInt32LE(offset);
+  return buffer.readInt32LE(offset)
 }

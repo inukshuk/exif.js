@@ -1,8 +1,8 @@
-var exif = require('../');
-var fs = require('fs');
-var assert = require('assert');
-var tetons = fs.readFileSync(__dirname + '/data/tetons.exif');
-var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif');
+var exif = require('../')
+var fs = require('fs')
+var assert = require('assert')
+var tetons = fs.readFileSync(__dirname + '/data/tetons.exif')
+var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif')
 
 describe('exif-reader', function() {
   it('should read tiff and exif data', function() {
@@ -15,25 +15,25 @@ describe('exif-reader', function() {
            yResolution: 300,
            resolutionUnit: 2,
            software: 'Adobe Photoshop CS Windows',
-           modifyDate: new Date("2006-04-04T22:31:30.000Z"),
+           modifyDate: new Date('2006-04-04T22:31:30.000Z'),
            artist: 'Unspecified',
            copyright: 'Unspecified',
            exifOffset: 256 },
-        thumbnail:
+      thumbnail:
          { compression: 6,
            xResolution: 72,
            yResolution: 72,
            resolutionUnit: 2,
            thumbnailOffset: 1102,
            thumbnailLength: 7050 },
-        exif:
+      exif:
          { exposureTime: 0.03333333333333333,
            fNumber: 19,
            exposureProgram: 2,
            iso: 100,
            exifVersion: Buffer.from([48, 50, 50, 48]),
-           dateTimeOriginal: new Date("2004-06-17T06:47:02.000Z"),
-           dateTimeDigitized: new Date("2004-06-17T06:47:02.000Z"),
+           dateTimeOriginal: new Date('2004-06-17T06:47:02.000Z'),
+           dateTimeDigitized: new Date('2004-06-17T06:47:02.000Z'),
            componentsConfiguration: Buffer.from([1, 2, 3, 0]),
            compressedBitsPerPixel: 9,
            shutterSpeedValue: 4.906890869140625,
@@ -56,8 +56,8 @@ describe('exif-reader', function() {
            customRendered: 0,
            exposureMode: 0,
            whiteBalance: 0,
-           sceneCaptureType: 0 } });
-  });
+           sceneCaptureType: 0 } })
+  })
 
   it('should read gps data and other exif data', function() {
     assert.deepEqual(exif(IMG_0774),
@@ -69,17 +69,17 @@ describe('exif-reader', function() {
            yResolution: 72,
            resolutionUnit: 2,
            software: 'Photos 1.0',
-           modifyDate: new Date("2015-02-28T17:13:57.000Z"),
+           modifyDate: new Date('2015-02-28T17:13:57.000Z'),
            exifOffset: 198,
            gpsInfo: 1008 },
-        exif:
+      exif:
          { exposureTime: 0.0020491803278688526,
            fNumber: 2.2,
            exposureProgram: 2,
            iso: 32,
            exifVersion: Buffer.from([48, 50, 50, 49]),
-           dateTimeOriginal: new Date("2015-02-28T17:13:57.000Z"),
-           dateTimeDigitized: new Date("2015-02-28T17:13:57.000Z"),
+           dateTimeOriginal: new Date('2015-02-28T17:13:57.000Z'),
+           dateTimeDigitized: new Date('2015-02-28T17:13:57.000Z'),
            componentsConfiguration: Buffer.from([1, 2, 3, 0]),
            shutterSpeedValue: 8.930864197530864,
            apertureValue: 2.2750072066878064,
@@ -105,7 +105,7 @@ describe('exif-reader', function() {
            lensSpecification: [ 4.15, 4.15, 2.2, 2.2 ],
            lensMake: 'Apple',
            lensModel: 'iPhone 6 back camera 4.15mm f/2.2' },
-        gps:
+      gps:
          { gpsLatitudeRef: 'N',
            gpsLatitude: [ 35, 18, 1.49 ],
            gpsLongitudeRef: 'W',
@@ -119,22 +119,22 @@ describe('exif-reader', function() {
            gpsImgDirection: 347.4401408450704,
            gpsDestBearingRef: 'T',
            gpsDestBearing: 167.44014084507043,
-           gpsDateStamp: '2015:03:01' } });
-  });
+           gpsDateStamp: '2015:03:01' } })
+  })
 
   it('should error when missing Exif tag', function() {
     assert.throws(function() {
-      exif(Buffer.from([50]));
-    }, /buffer should start with "Exif"/);
-  });
+      exif(Buffer.from([50]))
+    }, /buffer should start with "Exif"/)
+  })
 
   it('should error when missing byte order marker', function() {
     assert.throws(function() {
-      exif(Buffer.from('Exif\0\0IM'));
-    }, /expected byte order marker/);
+      exif(Buffer.from('Exif\0\0IM'))
+    }, /expected byte order marker/)
 
     assert.throws(function() {
-      exif(Buffer.from('Exif\0\0MI'));
-    }, /expected byte order marker/);
-  });
-});
+      exif(Buffer.from('Exif\0\0MI'))
+    }, /expected byte order marker/)
+  })
+})
