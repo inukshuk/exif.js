@@ -18,7 +18,7 @@ describe('exif-reader', function() {
            modifyDate: new Date('2006-04-04T22:31:30.000Z'),
            artist: 'Unspecified',
            copyright: 'Unspecified',
-           exifOffset: 256 },
+           exif_IFD_Pointer: 256 },
       thumbnail:
          { compression: 6,
            xResolution: 72,
@@ -70,8 +70,8 @@ describe('exif-reader', function() {
            resolutionUnit: 2,
            software: 'Photos 1.0',
            modifyDate: new Date('2015-02-28T17:13:57.000Z'),
-           exifOffset: 198,
-           gpsInfo: 1008 },
+           exif_IFD_Pointer: 198,
+           gpsInfo_IFD_Pointer: 1008 },
       exif:
          { exposureTime: 0.0020491803278688526,
            fNumber: 2.2,
@@ -122,19 +122,13 @@ describe('exif-reader', function() {
            gpsDateStamp: '2015:03:01' } })
   })
 
-  it('should error when missing Exif tag', function() {
-    assert.throws(function() {
-      exif(Buffer.from([50]))
-    }, /buffer should start with "Exif"/)
-  })
-
   it('should error when missing byte order marker', function() {
     assert.throws(function() {
       exif(Buffer.from('Exif\0\0IM'))
-    }, /expected byte order marker/)
+    }, /missing byte order marker/)
 
     assert.throws(function() {
       exif(Buffer.from('Exif\0\0MI'))
-    }, /expected byte order marker/)
+    }, /missing byte order marker/)
   })
 })

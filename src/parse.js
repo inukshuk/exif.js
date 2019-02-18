@@ -2,7 +2,10 @@
 //const namespace = 'http://www.w3.org/2003/12/exif/ns#'
 const tags = require('./tags')
 
+const { readTiffHeader } = require('./tiff')
+
 const {
+  readString,
   readInt16,
   readInt32,
   readUInt16,
@@ -15,55 +18,49 @@ const {
 } = require('./date')
 
 
-module.exports = parse
+module.exports = readExif
 
+const EXIF = Buffer.from('Exif\0', 'ascii')
 
-function parse(buffer, opts = {}) {
-  if (buffer.toString('ascii', 0, 5) !== 'Exif\0')
-    throw new Error(invalid('buffer should start with "Exif"'))
+function readExif(buffer, opts = {}) {
+  if (buffer.slice(0, 5).compare(EXIF) === 0)
+    buffer = buffer.slice(6)
 
-  let bigEndian = isBigEndian(buffer)
-
-  if (readUInt16(buffer, 8, bigEndian) !== 0x002A)
-    throw new Error(invalid('expected 0x002A.'))
-
-  let ifdOffset = readUInt32(buffer, 10, bigEndian) + 6
-  if (ifdOffset < 8)
-    throw new Error(invalid('ifdOffset < 8'))
+  let { isBigEndian, ifdOffset } = readTiffHeader(buffer)
 
   let result = {}
-  let ifd0 = readTags(buffer, ifdOffset, bigEndian, tags.exif, opts)
+  let ifd0 = readTags(buffer, ifdOffset, isBigEndian, tags.exif, opts)
   result.image = ifd0
 
-  let numEntries = readUInt16(buffer, ifdOffset, bigEndian)
-  ifdOffset = readUInt32(buffer, ifdOffset + 2 + numEntries * 12, bigEndian)
+  let numEntries = readUInt16(buffer, ifdOffset, isBigEndian)
+  ifdOffset = readUInt32(buffer, ifdOffset + 2 + numEntries * 12, isBigEndian)
   if (ifdOffset !== 0)
-    result.thumbnail = readTags(buffer, ifdOffset + 6, bigEndian, tags.exif, opts)
+    result.thumbnail = readTags(buffer, ifdOffset, isBigEndian, tags.exif, opts)
 
-  if (ifd0.exifOffset)
-    result.exif = readTags(buffer, ifd0.exifOffset + 6, bigEndian, tags.exif, opts)
+  if (ifd0.exif_IFD_Pointer)
+    result.exif = readTags(buffer, ifd0.exif_IFD_Pointer, isBigEndian, tags.exif, opts)
 
-  if (ifd0.gpsInfo)
-    result.gps = readTags(buffer, ifd0.gpsInfo + 6, bigEndian, tags.gps, opts)
+  if (ifd0.gpsInfo_IFD_Pointer)
+    result.gps = readTags(buffer, ifd0.gpsInfo_IFD_Pointer, isBigEndian, tags.gps, opts)
 
   if (ifd0.interopOffset)
-    result.interop = readTags(buffer, ifd0.interopOffset + 6, bigEndian, tags.exif, opts)
+    result.interop = readTags(buffer, ifd0.interopOffset, isBigEndian, tags.exif, opts)
 
   return result
 }
 
-function readTags(buffer, offset, bigEndian, tags, opts) {
+function readTags(buffer, offset, isBigEndian, tags, opts) {
   try {
-    let numEntries = readUInt16(buffer, offset, bigEndian)
+    let numEntries = readUInt16(buffer, offset, isBigEndian)
     offset += 2
 
     let res = {}
     for (let i = 0; i < numEntries; i++) {
-      let tag = readUInt16(buffer, offset, bigEndian)
+      let tag = readUInt16(buffer, offset, isBigEndian)
       offset += 2
 
       let key = tags[tag] || tag
-      let val = readTag(buffer, offset, bigEndian)
+      let val = readTag(buffer, offset, isBigEndian)
 
       if (isDateTag(key))
         val = parseDate(val, opts.timezoneOffset || 0)
@@ -81,18 +78,18 @@ function readTags(buffer, offset, bigEndian, tags, opts) {
 
 const SIZE_LOOKUP = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
 
-function readTag(buffer, offset, bigEndian) {
-  let type = readUInt16(buffer, offset, bigEndian)
+function readTag(buffer, offset, isBigEndian) {
+  let type = readUInt16(buffer, offset, isBigEndian)
 
   // Exit early in case of unknown or bogus type
   if (!type || type > SIZE_LOOKUP.length)
     return null
 
-  let numValues = readUInt32(buffer, offset + 2, bigEndian)
+  let numValues = readUInt32(buffer, offset + 2, isBigEndian)
   let valueSize = SIZE_LOOKUP[type - 1]
   let valueOffset = valueSize * numValues <= 4 ?
-    offset + 6 :
-    readUInt32(buffer, offset + 6, bigEndian) + 6
+    offset + 6:
+    readUInt32(buffer, offset + 6, isBigEndian)
 
   if (type === 2)
     return readString(buffer, valueOffset, numValues)
@@ -100,57 +97,39 @@ function readTag(buffer, offset, bigEndian) {
     return buffer.slice(valueOffset, valueOffset + numValues)
 
   if (numValues === 1)
-    return readValue(buffer, valueOffset, bigEndian, type)
+    return readValue(buffer, valueOffset, isBigEndian, type)
 
-  return readValues(buffer, valueOffset, valueSize, numValues, bigEndian, type)
+  return readValues(buffer, valueOffset, valueSize, numValues, isBigEndian, type)
 }
 
-function readString(buffer, offset, length) {
-  let string = buffer.toString('ascii', offset, offset + length)
-  if (string[string.length - 1] === '\0') // remove null terminator
-    string = string.slice(0, -1)
-  return string
-}
 
-function readValues(buffer, offset, size, num, bigEndian, type) {
+function readValues(buffer, offset, size, num, isBigEndian, type) {
   let res = []
   for (let i = 0; i < num; i++) {
-    res.push(readValue(buffer, offset, bigEndian, type))
+    res.push(readValue(buffer, offset, isBigEndian, type))
     offset += size
   }
   return res
 }
 
-function readValue(buffer, offset, bigEndian, type) {
+function readValue(buffer, offset, isBigEndian, type) {
   switch (type) {
   case 1: // uint8
     return buffer[offset]
   case 3: // uint16
-    return readUInt16(buffer, offset, bigEndian)
+    return readUInt16(buffer, offset, isBigEndian)
   case 4: // uint32
-    return readUInt32(buffer, offset, bigEndian)
+    return readUInt32(buffer, offset, isBigEndian)
   case 5: // unsigned rational
-    return readUInt32(buffer, offset, bigEndian) / readUInt32(buffer, offset + 4, bigEndian)
+    return readUInt32(buffer, offset, isBigEndian) / readUInt32(buffer, offset + 4, isBigEndian)
   case 6: // int8
     return buffer.readInt8(offset)
   case 8: // int16
-    return readInt16(buffer, offset, bigEndian)
+    return readInt16(buffer, offset, isBigEndian)
   case 9: // int32
-    return readInt32(buffer, offset, bigEndian)
+    return readInt32(buffer, offset, isBigEndian)
   case 10: // signed rational
-    return readInt32(buffer, offset, bigEndian) / readInt32(buffer, offset + 4, bigEndian)
+    return readInt32(buffer, offset, isBigEndian) / readInt32(buffer, offset + 4, isBigEndian)
   }
 }
 
-function invalid(message) {
-  return `Invalid EXIF data: ${message}.`
-}
-
-function isBigEndian(buffer) {
-  if (buffer[6] === 0x49 && buffer[7] === 0x49)
-    return false
-  else if (buffer[6] === 0x4d && buffer[7] === 0x4d)
-    return true
-  else
-    throw new Error(invalid('expected byte order marker'))
-}
