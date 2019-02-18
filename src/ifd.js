@@ -13,11 +13,12 @@ const {
 } = require('./date')
 
 const TYPE_SIZE = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
+const NAMESPACE = 'http://www.w3.org/2003/12/exif/ns#'
 
 class IFD {
   static get context() {
     return {
-      '@vocab': 'http://www.w3.org/2003/12/exif/ns#'
+      '@vocab': NAMESPACE
     }
   }
 
@@ -111,6 +112,21 @@ class IFD {
 
   set printImageMatching(value) {
     return this.tags.printImageMatching_IFD_Pointer = value
+  }
+
+  flatten(expand = false) {
+    let tags = {}
+
+    for (let key in this.tags) {
+      let value = this.tags[key]
+      if (value == null) continue
+      if (value instanceof IFD)
+        Object.assign(tags, value.flatten(expand))
+      else
+        tags[expand ? NAMESPACE + key : key] = value
+    }
+
+    return tags
   }
 
   toJSON(key) {
