@@ -12,7 +12,7 @@ exif.defaults = {
   interoperability: true,
   printImageMatching: true,
   strict: false,
-  thumbnail: true,
+  thumbnail: false,
   timezone: 0
 }
 
@@ -41,7 +41,8 @@ function exif(buffer, opts = {}) {
   if (opts.gpsInfo && ifd.gpsInfo)
     ifd.gpsInfo = IFD.read(buffer, ifd.gpsInfo, isBigEndian, TAGS.GPS, opts)
 
-  ifd.errors = meta.errors
+  if (meta.errors && meta.errors.length > 0)
+    ifd.errors = meta.errors
 
   return ifd
 }

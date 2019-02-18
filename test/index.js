@@ -6,8 +6,7 @@ var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif')
 
 describe('exif-reader', function() {
   it('should read tiff and exif data', function() {
-    assert.deepEqual(exif(tetons), {
-      errors: [],
+    assert.deepEqual(exif(tetons, { thumbnail: true, strict: true }), {
       tags: {
         make: 'Canon',
         model: 'Canon EOS D60',
@@ -68,8 +67,7 @@ describe('exif-reader', function() {
   })
 
   it('should read gps data and other exif data', function() {
-    assert.deepEqual(exif(IMG_0774), {
-      errors: [],
+    assert.deepEqual(exif(IMG_0774, { strict: true }), {
       tags: {
         make: 'Apple',
         model: 'iPhone 6',
