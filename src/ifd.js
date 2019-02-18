@@ -89,16 +89,28 @@ class IFD {
     return this.tags.exif_IFD_Pointer
   }
 
+  set exif(value) {
+    return this.tags.exif_IFD_Pointer = value
+  }
+
   get gpsInfo() {
     return this.tags.gpsInfo_IFD_Pointer
   }
 
-  get interoperability() {
-    return this.tags.interoperability_IFD_Pointer
+  set gpsInfo(value) {
+    return this.tags.gpsInfo_IFD_Pointer = value
+  }
+
+  set interoperability(value) {
+    return this.tags.interoperability_IFD_Pointer = value
   }
 
   get printImageMatching() {
     return this.tags.printImageMatching_IFD_Pointer
+  }
+
+  set printImageMatching(value) {
+    return this.tags.printImageMatching_IFD_Pointer = value
   }
 
   toJSON(key) {
