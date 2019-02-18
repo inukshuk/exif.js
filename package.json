@@ -1,10 +1,10 @@
 {
-  "name": "exif-reader",
-  "version": "1.0.2",
+  "name": "exif.js",
+  "version": "2.0.0",
   "description": "A small EXIF image metadata reader",
   "main": "index.js",
-  "directories": {
-    "test": "test"
+  "engine": {
+    "node":  ">=6"
   },
   "scripts": {
     "pretest": "eslint src test",
@@ -12,19 +12,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/devongovett/exif-reader.git"
+    "url": "git://github.com/inukshuk/exif.js.git"
   },
   "keywords": [
     "exif",
     "image",
     "metadata"
   ],
-  "author": "Devon Govett <devongovett@gmail.com>",
+  "author": [
+    "Sylester Keil <sylvester@keil.or.at>",
+    "Devon Govett <devongovett@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/devongovett/exif-reader/issues"
+    "url": "https://github.com/inukshuk/exif.js/issues"
   },
-  "homepage": "https://github.com/devongovett/exif-reader",
+  "homepage": "https://github.com/inukshuk/exif.js",
   "devDependencies": {
     "eslint": "^5.14.0",
     "mocha": "^5.2.0"
