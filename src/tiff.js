@@ -8,7 +8,7 @@ const {
 const II = Buffer.from([0x49, 0x49])
 const MM = Buffer.from([0x4d, 0x4d])
 
-function readTiffHeader(buffer) {
+function header(buffer) {
   let isBigEndian = checkByteOrder(buffer.slice(0, 2))
 
   if (readUInt16(buffer, 2, isBigEndian) !== 42)
@@ -31,5 +31,5 @@ function checkByteOrder(buffer) {
 }
 
 module.exports = {
-  readTiffHeader
+  header
 }

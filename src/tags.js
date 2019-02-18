@@ -3,10 +3,9 @@
  * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
  */
 
-
-exports.exif = {
-  0x0001: 'interopIndex',
-  0x0002: 'interopVersion',
+module.exports.EXIF = {
+  0x0001: 'interoperabilityIndex',
+  0x0002: 'interoperabilityVersion',
   0x000B: 'processingSoftware',
   0x00FE: 'subfileType',
   0x00FF: 'oldSubfileType',
@@ -253,7 +252,7 @@ exports.exif = {
   0xA002: 'pixelXDimension',
   0xA003: 'pixelYDimension',
   0xA004: 'relatedSoundFile',
-  0xA005: 'interopOffset',
+  0xA005: 'interoperability_IFD_Pointer',
   0xA20B: 'flashEnergy',
   0xA20C: 'spatialFrequencyResponse',
   0xA20D: 'noise',
@@ -274,7 +273,7 @@ exports.exif = {
   0xA402: 'exposureMode',
   0xA403: 'whiteBalance',
   0xA404: 'digitalZoomRatio',
-  0xA405: 'focalLengthIn35mmFormat',
+  0xA405: 'focalLengthIn35mmFilm',
   0xA406: 'sceneCaptureType',
   0xA407: 'gainControl',
   0xA408: 'contrast',
@@ -317,7 +316,7 @@ exports.exif = {
   0xC429: 'oceIDNumber',
   0xC42A: 'oceImageLogic',
   0xC44F: 'annotations',
-  0xC4A5: 'printIM',
+  0xC4A5: 'printImage_IFD_Pointer',
   0xC580: 'USPTOOriginalContentType',
   0xC612: 'dNGVersion',
   0xC613: 'dNGBackwardVersion',
@@ -436,7 +435,7 @@ exports.exif = {
   0xFE58: 'moireFilter'
 }
 
-exports.gps = {
+module.exports.GPS = {
   0x0000: 'gpsVersionID',
   0x0001: 'gpsLatitudeRef',
   0x0002: 'gpsLatitude',

@@ -100,7 +100,7 @@ describe('exif-reader', function() {
            sceneType: Buffer.from([1]),
            exposureMode: 0,
            whiteBalance: 0,
-           focalLengthIn35mmFormat: 29,
+           focalLengthIn35mmFilm: 29,
            sceneCaptureType: 0,
            lensSpecification: [ 4.15, 4.15, 2.2, 2.2 ],
            lensMake: 'Apple',
