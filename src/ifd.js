@@ -15,6 +15,8 @@ const {
 const TYPE_SIZE = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
 const NAMESPACE = 'http://www.w3.org/2003/12/exif/ns#'
 
+const identity = (x) => x
+
 class IFD {
   static get context() {
     return {
@@ -114,16 +116,15 @@ class IFD {
     return this.tags.printImageMatching_IFD_Pointer = value
   }
 
-  flatten(expand = false) {
+  flatten(expand = false, mapValue = identity) {
     let tags = {}
 
     for (let key in this.tags) {
       let value = this.tags[key]
-      if (value == null) continue
       if (value instanceof IFD)
-        Object.assign(tags, value.flatten(expand))
+        Object.assign(tags, value.flatten(expand, mapValue))
       else
-        tags[expand ? NAMESPACE + key : key] = value
+        tags[expand ? NAMESPACE + key : key] = mapValue(value)
     }
 
     return tags
