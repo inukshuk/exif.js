@@ -8,8 +8,7 @@ const {
 } = require('./util')
 
 const {
-  isDateTag,
-  parseDate
+  parseDateValues
 } = require('./date')
 
 const TYPE_SIZE = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
@@ -24,7 +23,7 @@ class IFD {
     }
   }
 
-  static read(buffer, offset, isBigEndian, TAGS, { timezone } = {}, meta = {}) {
+  static read(buffer, offset, isBigEndian, TAGS, opts = {}, meta = {}) {
     try {
       var ifd = new IFD()
       let count = readUInt16(buffer, offset, isBigEndian)
@@ -37,9 +36,6 @@ class IFD {
           let key = TAGS[tag] || tag
           let value = IFD.readTagValue(buffer, offset + 2, isBigEndian)
 
-          if (isDateTag(key))
-            value = parseDate(value, timezone)
-
           ifd.tags[key] = value
 
         } catch (error) {
@@ -48,6 +44,8 @@ class IFD {
           else throw error
         }
       }
+
+      parseDateValues(ifd.tags, opts.timezone)
 
       meta.next = readUInt32(buffer, offset, isBigEndian)
 

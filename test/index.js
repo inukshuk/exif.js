@@ -15,7 +15,7 @@ describe('exif-reader', function() {
         yResolution: 300,
         resolutionUnit: 2,
         software: 'Adobe Photoshop CS Windows',
-        modifyDate: new Date('2006-04-04T22:31:30.000Z'),
+        dateTime: new Date('2006-04-04T22:31:30.000Z'),
         artist: 'Unspecified',
         copyright: 'Unspecified',
         exif_IFD_Pointer: {
@@ -23,7 +23,7 @@ describe('exif-reader', function() {
             exposureTime: 0.03333333333333333,
             fNumber: 19,
             exposureProgram: 2,
-            iso: 100,
+            isoSpeedRatings: 100,
             exifVersion: Buffer.from([48, 50, 50, 48]),
             dateTimeOriginal: new Date('2004-06-17T06:47:02.000Z'),
             dateTimeDigitized: new Date('2004-06-17T06:47:02.000Z'),
@@ -76,13 +76,13 @@ describe('exif-reader', function() {
         yResolution: 72,
         resolutionUnit: 2,
         software: 'Photos 1.0',
-        modifyDate: new Date('2015-02-28T17:13:57.000Z'),
+        dateTime: new Date('2015-02-28T17:13:57.000Z'),
         exif_IFD_Pointer: {
           tags: {
             exposureTime: 0.0020491803278688526,
             fNumber: 2.2,
             exposureProgram: 2,
-            iso: 32,
+            isoSpeedRatings: 32,
             exifVersion: Buffer.from([48, 50, 50, 49]),
             dateTimeOriginal: new Date('2015-02-28T17:13:57.000Z'),
             dateTimeDigitized: new Date('2015-02-28T17:13:57.000Z'),
