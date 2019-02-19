@@ -1,7 +1,4 @@
-/**
- * Comprehensive list of TIFF and Exif tags found on
- * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
- */
+'use strict'
 
 module.exports.EXIF = {
   0x0001: 'interoperabilityIndex',
@@ -46,7 +43,7 @@ module.exports.EXIF = {
   0x012C: 'colorResponseUnit',
   0x012D: 'transferFunction',
   0x0131: 'software',
-  0x0132: 'modifyDate',
+  0x0132: 'dateTime',
   0x013B: 'artist',
   0x013C: 'hostComputer',
   0x013D: 'predictor',
@@ -186,8 +183,8 @@ module.exports.EXIF = {
   0x8822: 'exposureProgram',
   0x8824: 'spectralSensitivity',
   0x8825: 'gpsInfo_IFD_Pointer',
-  0x8827: 'iso',
-  0x8828: 'opto-ElectricConvFactor',
+  0x8827: 'isoSpeedRatings',
+  0x8828: 'oecf',
   0x8829: 'interlace',
   0x882A: 'timeZoneOffset',
   0x882B: 'selfTimerMode',
@@ -204,6 +201,9 @@ module.exports.EXIF = {
   0x9000: 'exifVersion',
   0x9003: 'dateTimeOriginal',
   0x9004: 'dateTimeDigitized',
+  0x9010: 'offsetTime',
+  0x9011: 'offsetTimeOriginal',
+  0x9012: 'offsetTimeDigitized',
   0x9101: 'componentsConfiguration',
   0x9102: 'compressedBitsPerPixel',
   0x9201: 'shutterSpeedValue',
