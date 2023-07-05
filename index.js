@@ -35,10 +35,10 @@ function exif(buffer, opts = {}) {
     ifd.thumbnail = IFD.read(buffer, meta.next, isBigEndian, TAGS.EXIF, opts, meta)
 
   for (let type of ['exif', 'interoperability', 'printImageMatching'])
-    if (opts[type] && ifd[type])
+    if (opts[type] && isOffset(ifd[type]))
       ifd[type] = IFD.read(buffer, ifd[type], isBigEndian, TAGS.EXIF, opts, meta)
 
-  if (opts.gpsInfo && ifd.gpsInfo)
+  if (opts.gpsInfo && isOffset(ifd.gpsInfo))
     ifd.gpsInfo = IFD.read(buffer, ifd.gpsInfo, isBigEndian, TAGS.GPS, opts)
 
   if (meta.errors && meta.errors.length > 0)
@@ -47,6 +47,9 @@ function exif(buffer, opts = {}) {
   return ifd
 }
 
+function isOffset(x) {
+  return typeof x === 'number' && Math.floor(x) === x && x > 0
+}
 
 module.exports = exif
 module.exports.IFD = IFD
