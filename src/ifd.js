@@ -3,7 +3,7 @@
 const {
   readUInt16,
   readUInt32,
-  readString,
+  readAsciiString,
   readValues
 } = require('./util')
 
@@ -40,8 +40,11 @@ class IFD {
 
         } catch (error) {
           error.offset = offset
-          if (meta.errors) meta.errors.push(error)
-          else throw error
+
+          if (meta.errors)
+            meta.errors.push(error)
+          else
+            throw error
         }
       }
 
@@ -51,8 +54,11 @@ class IFD {
 
     } catch (error) {
       error.offset = offset
-      if (meta.errors) meta.errors.push(error)
-      else throw error
+
+      if (meta.errors)
+        meta.errors.push(error)
+      else
+        throw error
     }
 
     return ifd
@@ -71,7 +77,8 @@ class IFD {
       readUInt32(buffer, offset + 6, isBigEndian)
 
     if (type === 2)
-      return readString(buffer, vOffset, count)
+      return readAsciiString(buffer, vOffset, count)
+
     if (type === 7)
       return buffer.slice(vOffset, vOffset + count)
 

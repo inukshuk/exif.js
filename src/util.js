@@ -1,11 +1,18 @@
 'use strict'
 
 const util = module.exports = {
-  readString(buffer, offset, length) {
-    let string = buffer.toString('ascii', offset, offset + length)
-    return (string[string.length - 1] === '\0') ?
-      string.slice(0, -1) :
-      string
+  readAsciiString(buffer, offset, length) {
+    let slice = buffer.slice(offset, offset + length)
+
+    if (slice.some(x => x >> 7 > 0))
+      return slice
+
+    let string = slice.toString('ascii')
+
+    if (string[string.length - 1] === '\0')
+      return string.slice(0, -1)
+    else
+      return string
   },
 
   readValues(buffer, offset, size, count, ...args) {
