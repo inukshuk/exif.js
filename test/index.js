@@ -7,6 +7,7 @@ var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif')
 describe('exif-reader', function() {
   it('should read tiff and exif data', function() {
     assert.deepEqual(exif(tetons, { thumbnail: true, strict: true }), {
+      isBigEndian: true,
       tags: {
         make: 'Canon',
         model: 'Canon EOS D60',
@@ -19,6 +20,7 @@ describe('exif-reader', function() {
         artist: 'Unspecified',
         copyright: 'Unspecified',
         exif_IFD_Pointer: {
+          isBigEndian: true,
           tags: {
             exposureTime: 0.03333333333333333,
             fNumber: 19,
@@ -54,6 +56,7 @@ describe('exif-reader', function() {
         }
       },
       thumbnail: {
+        isBigEndian: true,
         tags: {
           compression: 6,
           xResolution: 72,
@@ -68,6 +71,7 @@ describe('exif-reader', function() {
 
   it('should read gps data and other exif data', function() {
     assert.deepEqual(exif(IMG_0774, { strict: true }), {
+      isBigEndian: true,
       tags: {
         make: 'Apple',
         model: 'iPhone 6',
@@ -78,6 +82,7 @@ describe('exif-reader', function() {
         software: 'Photos 1.0',
         dateTime: new Date('2015-02-28T17:13:57.000Z'),
         exif_IFD_Pointer: {
+          isBigEndian: true,
           tags: {
             exposureTime: 0.0020491803278688526,
             fNumber: 2.2,
@@ -114,6 +119,7 @@ describe('exif-reader', function() {
           }
         },
         gpsInfo_IFD_Pointer: {
+          isBigEndian: true,
           tags: {
             gpsLatitudeRef: 'N',
             gpsLatitude: [ 35, 18, 1.49 ],
