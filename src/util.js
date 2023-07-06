@@ -15,6 +15,15 @@ const util = module.exports = {
       return string
   },
 
+  readUcs2String(buffer, offset, length) {
+    let string = buffer.toString('ucs2', offset, offset + length)
+
+    if (string[string.length - 1] === '\u0000')
+      return string.slice(0, -1)
+    else
+      return string
+  },
+
   readValues(buffer, offset, size, count, ...args) {
     let values = []
     for (let i = 0; i < count; i++) {

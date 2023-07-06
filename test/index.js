@@ -4,6 +4,7 @@ var assert = require('assert')
 var tetons = fs.readFileSync(__dirname + '/data/tetons.exif')
 var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif')
 var non_ascii = fs.readFileSync(__dirname + '/data/non-ascii.exif')
+var ucs2 = fs.readFileSync(__dirname + '/data/ucs2.exif')
 
 describe('exif-reader', function () {
   it('should read tiff and exif data', function () {
@@ -151,6 +152,19 @@ describe('exif-reader', function () {
         yResolution: 1,
         resolutionUnit: 1,
         yCbCrPositioning: 1
+      }
+    })
+  })
+
+  it('should read UCS2 data', function () {
+    assert.deepEqual(exif(ucs2), {
+      isBigEndian: false,
+      tags: {
+        xPAuthor: 'Українська (Russian?)',
+        xPComment: 'And a standard comment',
+        xPKeywords: 'עברית (Hebrew)',
+        xPSubject: 'తెలుగు (Telugu)',
+        xPTitle: 'Titel und ähnliches'
       }
     })
   })

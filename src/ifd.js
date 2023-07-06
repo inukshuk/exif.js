@@ -4,6 +4,7 @@ const {
   readUInt16,
   readUInt32,
   readAsciiString,
+  readUcs2String,
   readValues
 } = require('./util')
 
@@ -15,6 +16,7 @@ const TYPE_SIZE = [1, 1, 2, 4, 8, 1, 1, 2, 4, 8]
 const NAMESPACE = 'http://www.w3.org/2003/12/exif/ns#'
 
 const identity = (x) => x
+const isUCS2 = (tag) => tag >= 0x9c9b && tag <= 0x9c9f
 
 class IFD {
   static get context() {
@@ -33,8 +35,8 @@ class IFD {
       for (let i = 0; i < count; ++i, offset += 12) {
         try {
           let tag = readUInt16(buffer, offset, isBigEndian)
+          let value = IFD.readTagValue(tag, buffer, offset + 2, isBigEndian)
           let key = TAGS[tag] || tag
-          let value = IFD.readTagValue(buffer, offset + 2, isBigEndian)
 
           ifd.tags[key] = value
 
@@ -64,7 +66,7 @@ class IFD {
     return ifd
   }
 
-  static readTagValue(buffer, offset, isBigEndian) {
+  static readTagValue(tag, buffer, offset, isBigEndian) {
     let type = readUInt16(buffer, offset, isBigEndian)
 
     if (!type || type > TYPE_SIZE.length)
@@ -81,6 +83,9 @@ class IFD {
 
     if (type === 7)
       return buffer.slice(vOffset, vOffset + count)
+
+    if (type === 1 && isUCS2(tag))
+      return readUcs2String(buffer, vOffset, count)
 
     let values = readValues(buffer, vOffset, size, count, isBigEndian, type)
 
