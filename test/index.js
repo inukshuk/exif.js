@@ -3,9 +3,10 @@ var fs = require('fs')
 var assert = require('assert')
 var tetons = fs.readFileSync(__dirname + '/data/tetons.exif')
 var IMG_0774 = fs.readFileSync(__dirname + '/data/IMG_0774.exif')
+var non_ascii = fs.readFileSync(__dirname + '/data/non-ascii.exif')
 
-describe('exif-reader', function() {
-  it('should read tiff and exif data', function() {
+describe('exif-reader', function () {
+  it('should read tiff and exif data', function () {
     assert.deepEqual(exif(tetons, { thumbnail: true, strict: true }), {
       isBigEndian: true,
       tags: {
@@ -69,7 +70,7 @@ describe('exif-reader', function() {
     })
   })
 
-  it('should read gps data and other exif data', function() {
+  it('should read gps data and other exif data', function () {
     assert.deepEqual(exif(IMG_0774, { strict: true }), {
       isBigEndian: true,
       tags: {
@@ -141,12 +142,25 @@ describe('exif-reader', function() {
     })
   })
 
-  it('should error when missing byte order marker', function() {
-    assert.throws(function() {
+  it('should read non-ascii data', function () {
+    assert.deepEqual(exif(non_ascii), {
+      isBigEndian: true,
+      tags: {
+        imageDescription: Buffer.from([0xE4, 0xB8, 0x80, 0xE4, 0xB8, 0x89, 0xE4, 0xB8, 0x80, 0xE5, 0x9B, 0x9B, 0x00]),
+        xResolution: 1,
+        yResolution: 1,
+        resolutionUnit: 1,
+        yCbCrPositioning: 1
+      }
+    })
+  })
+
+  it('should error when missing byte order marker', function () {
+    assert.throws(function () {
       exif(Buffer.from('Exif\0\0IM'))
     }, /missing byte order marker/)
 
-    assert.throws(function() {
+    assert.throws(function () {
       exif(Buffer.from('Exif\0\0MI'))
     }, /missing byte order marker/)
   })
