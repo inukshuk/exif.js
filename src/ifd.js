@@ -25,7 +25,7 @@ class IFD {
 
   static read(buffer, offset, isBigEndian, TAGS, opts = {}, meta = {}) {
     try {
-      var ifd = new IFD()
+      var ifd = new IFD({}, isBigEndian)
       let count = readUInt16(buffer, offset, isBigEndian)
 
       offset += 2
@@ -89,7 +89,8 @@ class IFD {
       values
   }
 
-  constructor(tags = {}) {
+  constructor(tags = {}, isBigEndian = false) {
+    this.isBigEndian = isBigEndian
     this.tags = tags
   }
 
