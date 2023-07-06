@@ -99,7 +99,7 @@ class IFD {
   }
 
   set exif(value) {
-    return this.tags.exif_IFD_Pointer = value
+    this.tags.exif_IFD_Pointer = value
   }
 
   get gpsInfo() {
@@ -107,11 +107,11 @@ class IFD {
   }
 
   set gpsInfo(value) {
-    return this.tags.gpsInfo_IFD_Pointer = value
+    this.tags.gpsInfo_IFD_Pointer = value
   }
 
   set interoperability(value) {
-    return this.tags.interoperability_IFD_Pointer = value
+    this.tags.interoperability_IFD_Pointer = value
   }
 
   get printImageMatching() {
@@ -119,7 +119,7 @@ class IFD {
   }
 
   set printImageMatching(value) {
-    return this.tags.printImageMatching_IFD_Pointer = value
+    this.tags.printImageMatching_IFD_Pointer = value
   }
 
   flatten(expand = false, mapValue = identity) {
