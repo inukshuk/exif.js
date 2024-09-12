@@ -1,6 +1,6 @@
 {
   "name": "@inukshuk/exif",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A small EXIF image metadata reader",
   "main": "index.js",
   "engine": {
