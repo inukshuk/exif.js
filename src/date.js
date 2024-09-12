@@ -1,9 +1,9 @@
 'use strict'
 
 const DATE_TAGS = {
-  dateTimeOriginal: 'offsetTime',
-  dateTimeDigitized: 'offsetTimeOriginal',
-  dateTime: 'offsetTimeDigitized'
+  dateTimeOriginal: 'offsetTimeOriginal',
+  dateTimeDigitized: 'offsetTimeDigitized',
+  dateTime: 'offsetTime'
 }
 
 function parseDate(string, offset) {
